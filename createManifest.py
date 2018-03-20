@@ -28,6 +28,7 @@ def getFilePathsFor(path, excluded):
     """
     filePaths = []
     for dir, b, files in os.walk(path):
+        if dir.count('.git') != 0: continue
         for file in files:
             if file not in excluded:
                 filePaths.append((dir + '/' + file).replace('\\\\', '\\').replace('\\', '/'))
@@ -85,7 +86,10 @@ def getDefForSyntax(data, syntax):
 def getDefsForFile(path):
     """ Get the definitions for a file path """
     defs = {}
-    data = open(path, "r").read()
+    try:
+        data = open(path, "r").read()
+    except:
+        return {}
 
     for syntax in DEF_SYNTAXES:
         # Get the defintions found using this syntax
@@ -121,7 +125,7 @@ def createManifest(newData):
     newManifest = { "files": newData.get('files', {}), "defs": getFinalDefs(oldManifest.get('defs', {}), newData.get('defs', {})) }
     for key, value in oldManifest.get('files', {}).items():
         # If the file isn't part of the new manifest ignore it
-        if newManifest['files'].get('key', None) is None: continue
+        if newManifest['files'].get(key, None) is None: continue
 
         # If it has settings we want to keep
         if isinstance(value, dict):
