@@ -50,7 +50,7 @@ def getDefForSyntax(data, syntax):
     syntaxLen = len(syntax)
     s = data.find(syntax)
     # While we can't find anymore
-    while s != -1:
+    while s != -1 and len(data) > s + 1:
         s += syntaxLen + 1
         # We make sure it's an actual string and not a variable
 
@@ -60,7 +60,7 @@ def getDefForSyntax(data, syntax):
             # We have the packet name
             packetName = data[s:e]
             # While s isn't a number we increment it by 1
-            while not data[s].isdigit(): s+= 1
+            while len(data) > s + 1 and not data[s].isdigit(): s+= 1
 
             # Make sure we didn't pass a new line, a { or a ( to find that digit
             if s > data.find('\n', e) or s > data.find('{', e) or s > data.find('(', e): continue
